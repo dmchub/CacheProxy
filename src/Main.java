@@ -1,25 +1,24 @@
-import com.sun.deploy.net.proxy.ProxyUtils;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 
 public class Main {
     public static void main(String[] args) {
         // run(new CachedCalculator(new CalculatorImpl()));
         Calculator calculator = new CalculatorImpl();
-        calculator.calc(1);
-        calculator.calc(1);
 
-        Calculator cached = new CachedCalculator(calculator);
-        cached.calc(1);
-        cached.calc(2);
-        cached.calc(1);
-    }
+        Class<?> proxyClass = Proxy.getProxyClass(Calculator.class.getClassLoader(), Calculator.class);
 
-    private static void run(Calculator calculator) {
-        System.out.println(1);
-        System.out.println(5);
-        System.out.println(1);
-        System.out.println(1);
-        System.out.println(1);
-        System.out.println(1);
-        System.out.println(1);
+        try {
+            Calculator calculatorProxy = (Calculator)proxyClass.getConstructor(InvocationHandler.class)
+                    .newInstance(new CacheHandler(calculator));
+
+            int result;
+            result = calculatorProxy.calc(1);
+            result = calculatorProxy.calc(2);
+            result = calculatorProxy.calc(1);
+        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e){
+            e.printStackTrace();
+        }
     }
 }
