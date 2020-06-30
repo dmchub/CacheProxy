@@ -1,7 +1,9 @@
 public class CalculatorImpl implements Calculator {
 
     @Override
-    public int calc(int val) {
-        return val * val;
+    public int calc(int arg) {
+        int result = arg * arg;
+        System.out.println("Result: " + result + " is calculated");
+        return result;
     }
 }

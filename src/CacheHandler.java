@@ -19,13 +19,18 @@ public class CacheHandler implements InvocationHandler {
         if(method.isAnnotationPresent(Cache.class)){
             int arg = (int)args[0];
             Integer result = cache.get(arg);
+            System.out.println("Looking for the result " + arg + " in cache");
             if(result == null){
+                System.out.println("The result " + arg + " not found");
                 result = (Integer)method.invoke(original, arg);
                 cache.put(arg, result);
+                System.out.println("Calculated result " + result + " added in cache");
+            }else {
+                System.out.println("The result " + result + " is found and taken from cache");
             }
             return result;
         }
-
+        // System.out.println("The result " + original + " is taken from cache");
 
         return method.invoke(original, args);
     }
